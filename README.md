@@ -1,4 +1,24 @@
-# deepseenet-plus
+# Towards Accountable AI-Assisted Eye Disease Diagnosis: Workflow Design, External Validation, and Continual Learning
+
+This repository provides related codes, data, and models for the paper titled 'Towards Accountable AI-Assisted Eye Disease Diagnosis: Workflow Design, External Validation, and Continual Learning'.
+
+## Instructions to set up
+### Environments
+Have python3.8+ and Tensorflow 2.9.1 + installed.
+
+## Models
+Please download the models from [here](https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/deeplensnet/models.zip).
+
+## Inference
+```
+python model_classify.py --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv --output_file=output_test_file.csv
+Please note that image_set/ and input_files.csv are provided in the repository
+```
+## Continue training
+```
+python model_classify.py --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv --output_file=output_test_file.csv
+Please note that image_set/ and input_files.csv are provided in the repository
+```
 
 ## NCBI's Disclaimer
 This tool shows the results of research conducted in the [Computational Biology Branch](https://www.ncbi.nlm.nih.gov/research/), [NCBI](https://www.ncbi.nlm.nih.gov/home/about). 
