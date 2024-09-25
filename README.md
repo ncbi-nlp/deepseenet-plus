@@ -11,13 +11,11 @@ Please download the models from [here](https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl
 
 ## Inference
 ```
-python model_classify.py --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv --output_file=output_test_file.csv
-Please note that image_set/ and input_files.csv are provided in the repository
+python model.py -inference --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv --output_file=output_test_file.csv
 ```
 ## Continue training
 ```
-python model_classify.py --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv --output_file=output_test_file.csv
-Please note that image_set/ and input_files.csv are provided in the repository
+python model.py -train --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv 
 ```
 
 ## NCBI's Disclaimer
