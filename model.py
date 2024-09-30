@@ -1,18 +1,23 @@
 """
 Usage:
-    model_classify.py -i --model_folder=<str> --image_folder=<str> --input_file=<str> --output_file=<str>
-    model_classify.py -t --model_folder=<str> --image_folder=<str> --input_file=<str>
+    model.py -i --model_folder=<str> --image_folder=<str> --input_file=<str> --output_file=<str>
+    model.py -t --model_path=<str> --image_folder=<str> --input_file=<str> --risk_factor=<str>
 
 Options:
     -h --help              Show this help message
     -i --inference         Evaluate the model
     -t --train             Continue training the model
     --model_folder=<str>   Path where the model is saved
+    --model_path=<str>     File path of trained model
     --image_folder=<str>   Path where the images are saved
     --input_file=<str>     Input file of patients, image path names
     --output_file=<str>    Output file name
+    --risk_factor=<str>    Risk factor to train: drusen, pigment, amd
 """
-# python model.py -i --model_folder=../models --image_folder=../example_images --input_file=../ex_input_file.csv --output_file=ex_output.csv
+# RUN INFERENCE:
+#   python model.py -i --model_folder=../models --image_folder=../example_images --input_file=../ex_input_file.csv --output_file=ex_output.csv
+# CONTINUE TRAINING:
+#   python model.py -t --model_path=../models/amd.h5 --image_folder=../example_images --input_file=../ex_input_file.csv --risk_factor=amd 
 
 '''
 pull models and utils from dsnplus folder
@@ -43,19 +48,21 @@ In DeepSeeNet, examples folder has scripts to do inference OR train. These will 
 - DLN doesn't have patid? is just consecutive, so they just append predictions. 
     DSN's predict_simplified_score is for one patient (one (left_eye, right_eye) pair) at a time
 
-
-
-continual training
-- load a partially trained model
 '''
 
+import multiprocessing
 import sys 
 import os 
 import numpy as np
 import pandas as pd
 from docopt import docopt
-from keras.models import load_model
+# from keras.models import load_model
+from tensorflow.keras.models import load_model
 from dsnplus.utils import get_simplified_score, preprocess_image
+from tensorflow.keras import backend as K
+from tensorflow.keras import optimizers, callbacks
+from dsnplus.data_generator import DataGenerator
+from tensorflow.keras.optimizers import Adam
 
 
 def run_inference_final_score(model_folder, image_folder, input_file, output_file, risk_factors=['drusen', 'pigment', 'amd']):
@@ -113,44 +120,81 @@ def run_inference_final_score(model_folder, image_folder, input_file, output_fil
     final_scores_df = pd.DataFrame(list(final_scores.items()), columns=['PATID', 'simplified_score_PRED'])
     final_scores_df.to_csv(output_file, index=False)
 
-
-def run_inference_risk_factors(model_folder, image_folder, input_file, output_file, risk_factors=['drusen', 'pigment', 'amd']):
-    ''' Basically from DSN, combine examples/predict_drusen with similar predict_pigment, predict_amd
-    predicts these risk factors per image (doesn't care about l/r)'''
-
-    df = pd.read_csv(input_file)
-    # for each risk factor model, run inference
-    for risk_factor in risk_factors:
-        model_path = os.path.join(model_folder, risk_factor+'.h5')
-        model = load_model(model_path)
-        # Image filenames are in image_folder. Do one image at a time (just inference)
-        predictions = []
-        image_files = [file for file in os.listdir(model_folder) if file.endswith('.h5')]
-        for image_file in image_files:
-            image = preprocess_image(os.path.join(image_folder, image_file))
-            pred =  model.predict([image])
-            predictions.append(pred[0][0]) #?? argmax? examine
-
-        df[risk_factor+'_PRED'] = predictions
-
 # df has predictions for each risk factor
     #?? also save? in case only want risk factor, or error in final score 
     # df.to_csv(output_file, index=False)
 
 
+# class DataLoader(object):                 // a class seems unecessary. used prep_instances instead
+#     def __init__(self):
+#         log.info('data loader created')
+#     def load_instances(self, file_path):
+#         df = pd.read_csv(file_path)
+#         df = df.sample(frac=1.0, replace=False, random_state=seed)
+#         return df
 
-def continue_train():
-    # load model
-    # run train?? may need to refernce other files for actual training, such as inception_amd2.py, inception_drusen.py etc (combine these into one train_model.py file?)
-    pass
+def train(model_path, image_folder, input_file, risk_factor, batch_size=2): #!! 16
+    ''' Continue training model.
+    input_file(str): training data file '''
 
-#*To continue training, specify generators and call model.fit. This uses the same code as in the train_model function, EXCEPT do not recompile the model.
+    train_data, valid_data, n_classes = prep_instances(input_file, image_folder)
+
+    cpu_count = multiprocessing.cpu_count()
+    workers = max(int(cpu_count / 3), 1)
+
+    model = load_model(model_path)
+    earlystop = callbacks.EarlyStopping(monitor='val_loss', min_delta=K.epsilon(), patience=5, verbose=1, mode="min")
+    best_checkpoint = callbacks.ModelCheckpoint(
+          str(model_path), save_best_only=True, save_weights_only=False,
+          monitor='val_loss', mode='min', verbose=1)
+    # optimizer = Adam(learning_rate=0.0001, beta_1=0.9, beta_2=0.999, clipnorm=0.001, epsilon=0.001, amsgrad=False)
+    
+    train_generator = DataGenerator(train_data, n_classes, batch_size, risk_factor, shuffle=True)
+    valid_generator = DataGenerator(valid_data, n_classes, batch_size, risk_factor, shuffle=False)
+    train_chunk_number = train_generator.get_epoch_num()
+
+    print(f"Info: Training model {model_path}")
+    model.fit(train_generator, 
+       use_multiprocessing=True, 
+       workers=workers, 
+       steps_per_epoch=train_chunk_number,
+       callbacks=[earlystop, best_checkpoint], 
+       epochs=50, 
+       validation_data=valid_generator,
+       validation_steps=valid_generator.get_epoch_num(), 
+       verbose=1,)
+
+def prep_instances(train_file, image_folder, val_size=0.8, shuffle=True):
+    """
+    Read the dataset.
+    Args:
+        train_file(str): File path of training dataset
+        val_size(float): Between 0.0 and 1.0; proportion of the dataset to include in the validation split.
+        shuffle(bool): Whether or not to shuffle the data before splitting.
+        parent(str): Data directory
+    Returns:
+        !!
+        int: Number of classes
+    """
+    df = pd.read_csv(train_file)
+    print("df before mod\n", df)
+    df['pathname'] = df['pathname'].apply(lambda x: os.path.join(image_folder, x))
+    print("df after mod\n", df)
+    n_classes = len(df.iloc[:, 1].unique())
+
+    if shuffle:
+        df = df.sample(frac=1).reset_index(drop=True)
+
+    split_size = int(len(df) * val_size)
+    train_data = df.iloc[:split_size]#.values.tolist()
+    valid_data = df.iloc[split_size:]#.values.tolist()
+
+    return train_data, valid_data, n_classes
 
 
 if __name__ == "__main__":
     print("running main")
     
-    # argv = docopt(__doc__, sys.argv[1:])
     try:
         argv = docopt(__doc__, sys.argv[1:])
         print(argv)  # Check if arguments are parsed correctly
@@ -169,5 +213,6 @@ if __name__ == "__main__":
 
     elif argv['--train']:
         print("Continuing training")
-
-
+        model_path = argv['--model_path']
+        risk_factor = argv['--risk_factor']
+        train(model_path, image_folder, input_file, risk_factor)
