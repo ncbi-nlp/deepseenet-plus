@@ -14,11 +14,6 @@ Options:
     --output_file=<str>    Output file name
     --risk_factor=<str>    Risk factor to train: drusen, pigment, amd
 """
-# EXAMPLES:
-# Run inference:
-#   python model.py -i --model_folder=../models --image_folder=../example_images --input_file=../ex_input_file.csv --output_file=ex_output.csv
-# Continue training:
-#   python model.py -t --model_path=../models/amd.h5 --image_folder=../example_images --input_file=../ex_input_file.csv --risk_factor=amd 
 
 import multiprocessing
 import sys 
@@ -70,8 +65,8 @@ def run_inference_final_score(model_folder, image_folder, input_file, output_fil
         final_scores[str(patid)] = {'simplified_score_PRED': simplified_score}
 
         for risk_factor in risk_factors:
-            final_scores[str(patid)][f"{risk_factor}_L"] = data[f"{risk_factor}_L"]
-            final_scores[str(patid)][f"{risk_factor}_R"] = data[f"{risk_factor}_R"]
+            final_scores[str(patid)][f"{risk_factor}_L_PRED"] = data[f"{risk_factor}_L"]
+            final_scores[str(patid)][f"{risk_factor}_R_PRED"] = data[f"{risk_factor}_R"]
     
     final_scores_df = pd.DataFrame.from_dict(final_scores, orient='index').reset_index().rename(columns={'index': 'PATID'})
     final_scores_df.to_csv(output_file, index=False)

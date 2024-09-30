@@ -22,9 +22,9 @@ This will grade scores for each risk factor, as well as a final simplified sever
 ```
 python model.py -i --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv --output_file=output_file.csv
 ```
-To use the example data, run the following, replacing `models/` with the model folder.
+To use the example data provided, run the following, replacing `models/` with the model folder.
 ```
-python model.py -i --model_folder=models/ --image_folder=example_images/ --input_file=example_input_files.csv --output_file=example_output.csv
+python model.py -i --model_folder=models/ --image_folder=examples/example_images/ --input_file=examples/example_input_file.csv --output_file=examples/example_output.csv
 ```
 ## Continue training
 A saved risk factor model can be further trained. Specify the targeted risk factor with `risk_factor` (either "drusen", "pigment", or "amd").
