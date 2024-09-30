@@ -41,20 +41,20 @@ def get_simplified_score(scores):
         return True if score == 1 else False
 
     score = 0
-    if has_adv_amd(scores['amd_left']):
+    if has_adv_amd(scores['amd_L']):
         score += 5
-    if has_adv_amd(scores['amd_right']):
+    if has_adv_amd(scores['amd_R']):
         score += 5
-    if has_pigment(scores['pigment_left']):
+    if has_pigment(scores['pigment_L']):
         score += 1
-    if has_pigment(scores['pigment_right']):
+    if has_pigment(scores['pigment_R']):
         score += 1
-    if has_large_drusen(scores['drusen_left']):
+    if has_large_drusen(scores['drusen_L']):
         score += 1
-    if has_large_drusen(scores['drusen_right']):
+    if has_large_drusen(scores['drusen_R']):
         score += 1
-    if has_intermediate_drusen(scores['drusen_left']) \
-            and has_intermediate_drusen(scores['drusen_right']):
+    if has_intermediate_drusen(scores['drusen_L']) \
+            and has_intermediate_drusen(scores['drusen_R']):
         score += 1
 
     return 5 if score >= 5 else score

@@ -5,9 +5,8 @@ from dsnplus.utils import preprocess_image
 from sklearn.utils import class_weight
 
 class DataGenerator(Sequence):
-    def __init__(self, data, n_classes, batch_size, risk_factor, augmentation=False, shuffle=False):
+    def __init__(self, data, n_classes, batch_size, risk_factor, shuffle=False):
         self.data = data
-        self.agumentation = augmentation
         self.shuffle = shuffle
         self.n_classes = n_classes
         self.batch_size = batch_size
@@ -23,16 +22,14 @@ class DataGenerator(Sequence):
 
     def __getitem__(self, index):
         rows = self.chunks[index]
-        batch_images, batch_labels = self._images_process(rows, self.risk_factor)
+        batch_images, batch_labels = self.process_images(rows)
         return batch_images, batch_labels
 
-    def _images_process(self, rows, risk_factor):
+    def process_images(self, rows):
         batch_images = np.array([]) 
         batch_labels = []
 
-        print("rows", rows.columns)
         for _, row in rows.iterrows():
-            
             file_path, label = row['pathname'], row[self.risk_factor]
             try:
                 x = preprocess_image(file_path)
@@ -69,10 +66,3 @@ class DataGenerator(Sequence):
         class_weight_list = class_weight.compute_class_weight('balanced', np.unique(labels), labels)
         cw = dict(zip(np.unique(labels), class_weight_list))
         return cw
-
-    @property
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
-    def close(self):
-        pass
