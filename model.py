@@ -26,7 +26,6 @@ import os
 import numpy as np
 import pandas as pd
 from docopt import docopt
-# from keras.models import load_model
 from tensorflow.keras.models import load_model
 from dsnplus.utils import get_simplified_score, preprocess_image
 from tensorflow.keras import backend as K
@@ -60,29 +59,25 @@ def run_inference_final_score(model_folder, image_folder, input_file, output_fil
             left_pred = model.predict(x_left)
             left_score = np.argmax(left_pred, axis=1)[0]
             right_score = np.argmax(model.predict(preprocess_image(x_right)), axis=1)[0]
-            print("left_score\t", left_score, "| right_score\t", right_score)
 
             scores.loc[patid, f"{risk_factor}_L"] = left_score
             scores.loc[patid, f"{risk_factor}_R"] = right_score
-
-    print("Scores df after all risk factors:\n", scores, "\n")
     
     final_scores = {} # patid => final score
     for patid, data in scores.iterrows():
         simplified_score = get_simplified_score(data)
         final_scores[str(patid)] = simplified_score
         final_scores[str(patid)] = {'simplified_score_PRED': simplified_score}
-        print(f"Final score for {patid}: {simplified_score}")
 
         for risk_factor in risk_factors:
             final_scores[str(patid)][f"{risk_factor}_L"] = data[f"{risk_factor}_L"]
             final_scores[str(patid)][f"{risk_factor}_R"] = data[f"{risk_factor}_R"]
     
-    # print("Final scores df:\n", final_scores)
     final_scores_df = pd.DataFrame.from_dict(final_scores, orient='index').reset_index().rename(columns={'index': 'PATID'})
     final_scores_df.to_csv(output_file, index=False)
+    print(f"Saved predictions to {output_file}")
 
-def train(model_path, image_folder, input_file, risk_factor, batch_size=2): #!! 16
+def train(model_path, image_folder, input_file, risk_factor, batch_size=16):
     ''' 
     Load and continue training model
     '''

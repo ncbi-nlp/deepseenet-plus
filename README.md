@@ -6,17 +6,32 @@ This repository provides related codes, data, and models for the paper titled 'T
 ### Environments
 Have python3.8+ and Tensorflow 2.9.1 + installed.
 
+### Clone the repository
+git clone https://github.com/ncbi-nlp/deepseenet-plus.git
+cd deepseenet-plus
+
+### Install the required libraries
+pip install -r requirements.txt
+
 ## Models
 Please download the models from [here](https://ftp.ncbi.nlm.nih.gov/pub/lu/Suppl/deeplensnet/models.zip).
 
 ## Inference
+Inference can be performed with the following command. Replace options with the correct paths. 
+This will grade scores for each risk factor, as well as a final simplified severity score.
 ```
-python model.py -inference --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv --output_file=output_test_file.csv
+python model.py -i --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv --output_file=output_file.csv
+```
+To use the example data, run the following, replacing `models/` with the model folder.
+```
+python model.py -i --model_folder=models/ --image_folder=example_images/ --input_file=example_input_files.csv --output_file=example_output.csv
 ```
 ## Continue training
+A saved risk factor model can be further trained. Specify the targeted risk factor with `risk_factor` (either "drusen", "pigment", or "amd").
 ```
-python model.py -train --model_folder=models/ --image_folder=image_set/ --input_file=input_files.csv 
+python model.py -t --model_path=model.h5 --image_folder=image_set/ --input_file=input_files.csv --risk_factor=drusen/pigment/amd
 ```
+This will load the model from `model_path`, read images and labels from `input_file`, train the model, and save the latest best model.
 
 ## NCBI's Disclaimer
 This tool shows the results of research conducted in the [Computational Biology Branch](https://www.ncbi.nlm.nih.gov/research/), [NCBI](https://www.ncbi.nlm.nih.gov/home/about). 

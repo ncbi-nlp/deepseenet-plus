@@ -1,4 +1,0 @@
-PATID,simplified_score_PRED,drusen_L,drusen_R,pigment_L,pigment_R,amd_L,amd_R
-111,3,2.0,2.0,1.0,0.0,0.0,0.0
-222,5,2.0,2.0,1.0,1.0,1.0,0.0
-333,5,2.0,2.0,0.0,1.0,0.0,1.0
