@@ -47,9 +47,8 @@ About [text mining group](https://www.ncbi.nlm.nih.gov/research/bionlp/).
 The performance characteristics of this product have not been evaluated by the Food and Drug Administration and is not intended for commercial use or purposes beyond research use only. 
 
 ## Citing Our Work
-=================
 
-*  Chen, Q*., Keenan, T.D*., Agron, E., Allot, A., Guan, E., Duong, B., Elsawy, A., Hou, B., Xue, C., Bhandari, S. and Broadhead, G., 2025. AI Workflow, External Validation, and Development in Eye Disease Diagnosis. JAMA Network Open, 8(7), pp.e2517204-e2517204.
+Chen, Q*., Keenan, T.D*., Agron, E., Allot, A., Guan, E., Duong, B., Elsawy, A., Hou, B., Xue, C., Bhandari, S. and Broadhead, G., ... Lu, L., 2025. AI Workflow, External Validation, and Development in Eye Disease Diagnosis. JAMA Network Open, 8(7), pp.e2517204-e2517204. [See full-text](https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2836426)
 
 
 
