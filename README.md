@@ -1,6 +1,7 @@
-# Towards Accountable AI-Assisted Eye Disease Diagnosis: Workflow Design, External Validation, and Continual Learning
+# AI Workflow, External Validation, and Development in Eye Disease Diagnosis
 
-This repository provides related codes, data, and models for the paper titled 'Towards Accountable AI-Assisted Eye Disease Diagnosis: Workflow Design, External Validation, and Continual Learning'.
+This repository provides related codes, data, and models for the paper titled `AI Workflow, External Validation, and Development in Eye Disease Diagnosis <[https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2836426]'.
+
 
 ## Instructions to set up
 ### Environments
@@ -44,6 +45,13 @@ About [text mining group](https://www.ncbi.nlm.nih.gov/research/bionlp/).
 
 ## For Research Use Only
 The performance characteristics of this product have not been evaluated by the Food and Drug Administration and is not intended for commercial use or purposes beyond research use only. 
+
+## Citing Our Work
+=================
+
+*  Chen, Q*., Keenan, T.D*., Agron, E., Allot, A., Guan, E., Duong, B., Elsawy, A., Hou, B., Xue, C., Bhandari, S. and Broadhead, G., 2025. AI Workflow, External Validation, and Development in Eye Disease Diagnosis. JAMA Network Open, 8(7), pp.e2517204-e2517204.
+
+
 
 ## Acknowledgement
 This research was supported by R00LM014024 and the NIH Intramural Research Program of National Library of Medicine and National Eye Institute. Dr. Mehta would also like to acknowledge a departmental unrestricted grant by Research to Prevent Blindness. The views do not reflect the official policy or position of the U.S. Army Medical Department, the U.S. Army Office of the Surgeon General, the Department of the Army, Department of Defense, the Uniformed Services University of the Health Sciences, or any other agency of the U.S. Government.
