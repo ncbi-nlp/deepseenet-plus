@@ -1,6 +1,6 @@
 # AI Workflow, External Validation, and Development in Eye Disease Diagnosis
 
-This repository provides related codes, data, and models for the paper titled [AI Workflow, External Validation, and Development in Eye Disease Diagnosis](https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2836426).
+This repository provides related codes, data, and models for the paper titled [AI Workflow, External Validation, and Development in Eye Disease Diagnosis](https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2836426). The model DeepSeeNet+ has been updated from the original DeepSeeNet by further training on an additional 40,000 curated color fundus photographs from the AREDS2 dataset. Please see [the original repository](https://github.com/ncbi-nlp/DeepSeeNet/) for details.  
 
 
 ## Instructions to set up
