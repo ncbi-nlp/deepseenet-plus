@@ -1,6 +1,6 @@
 # AI Workflow, External Validation, and Development in Eye Disease Diagnosis
 
-This repository provides related codes, data, and models for the paper titled `AI Workflow, External Validation, and Development in Eye Disease Diagnosis <[https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2836426]'.
+This repository provides related codes, data, and models for the paper titled `AI Workflow, External Validation, and Development in Eye Disease Diagnosis [https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2836426]`_.
 
 
 ## Instructions to set up
